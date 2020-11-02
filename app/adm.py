@@ -23,9 +23,13 @@ class Adm:
             print("Escolha a sala")
             sala = input("Sala: ")
             sala = self.sala.salas[sala]
+            
+            print("\nPara esta sala desejada, confira abaixo a disponibilidade para reserva:")
+            self.disponibilidade_futura(sala)
                 
             print("\nInsira uma data, no formato 'dd/mm/aaaa'")
             data = input("Data: ")
+            
             
             print("\nInsira a hora de início, no formato 'hh:mm'")
             hora_inicio = input("Hora de início: ")
@@ -42,6 +46,20 @@ class Adm:
             
             break
     
+    def disponibilidade_futura(self, sala):
+        
+        for key_reserva in self.sala.reservas:
+            reserva = self.sala.reservas[key_reserva]
+            
+            if reserva.sala.nome == sala.nome:
+                print(f"\nSala        : {reserva.sala.nome}")
+                print(f"Tipo        : {reserva.sala.tipo}")
+                print(f"Data        : {reserva.data}")
+                print(f"Hora Início : {reserva.hora_inicio}")
+                print(f"Hora Término: {reserva.hora_termino}")
+                print(f"Medico      : {reserva.medico.nome}")
+                print(f"Custo Total : {reserva.custo_total}")
+        
     def escolher_tipo(self):
         
         while True:
@@ -58,6 +76,38 @@ class Adm:
             
             else:
                 print("\nEscolha uma opção válida!")
+    
+    def excluir_reserva(self, data_reservada):
+        
+        date = str(datetime.date(datetime.now()))
+    
+        today_day   = date.split("-")[2]
+        today_month = date.split("-")[1]
+        today_year  = date.split("-")[0]
+        
+        data_res_split = data_reservada.split("/")
+        data_res_dia = data_res_split[0]
+        data_res_mes = data_res_split[1]
+        data_res_ano = data_res_split[2]
+        
+        if data_res_ano > today_year:
+            pass        
+
+        elif data_res_ano >= today_year and data_res_mes > today_month:
+            pass
+            
+        elif data_res_ano >= today_year and data_res_mes >= today_month and data_res_dia > today_day:
+            pass
+        
+        else:
+            print("Insira uma data futura válida.")
+            return 0
+
+        for key_reserva in self.sala.reservas:
+            reserva = self.sala.reservas[key_reserva]
+
+            if reserva.data == data_reservada:
+                self.sala.reservas[key_reserva].pop()
             
     def adm_main(self):
         
@@ -276,6 +326,56 @@ class Adm:
         for key_custo in custo_dict:
             print(f"\nSala        : {key_custo}")
             print(f"Custo gerado: {custo_dict[key_custo]}")
+    
+    def reservas_por_periodo(self, data_ini, data_fim):
+        
+        data_ini_splitted = data_ini.split("/")
+        ini_ano = data_ini_splitted[2]
+        ini_mes = data_ini_splitted[1]
+        ini_dia = data_ini_splitted[0]
+        
+        data_fim_splitted = data_fim.split("/")
+        fim_ano = data_fim_splitted[2]
+        fim_mes = data_fim_splitted[1]
+        fim_dia = data_fim_splitted[0]
+        
+        reservas_no_periodo = []
+        todas_reservas      = self.sala.ordernar_reservas_por_data()
+        
+        for reserva in todas_reservas:
+            
+            date = reserva[1]
+            date_splitted = date.split("/")
+            
+            ano = date_splitted[2]
+            mes = date_splitted[1]
+            dia = date_splitted[0]
+                
+            if (ano > ini_ano and ano < fim_ano):
+                reservas_no_periodo.append(reserva)        
+
+            elif (ano >= ini_ano and ano <= fim_ano) and (mes > ini_mes and mes < fim_mes):
+                reservas_no_periodo.append(reserva)
+                
+            elif (ano >= ini_ano and ano <= fim_ano) and (mes >= ini_mes and mes <= fim_mes) and (dia > ini_dia and dia < fim_dia):
+                reservas_no_periodo.append(reserva)
+        
+        custo_periodo = 0
+        for reserva in reservas_no_periodo:
+            reserva = self.sala.reservas[reserva[0]]
+            
+            print(f"\nSala        : {reserva.sala.nome}")
+            print(f"Tipo        : {reserva.sala.tipo}")
+            print(f"Data        : {reserva.data}")
+            print(f"Hora Início : {reserva.hora_inicio}")
+            print(f"Hora Término: {reserva.hora_termino}")
+            print(f"Medico      : {reserva.medico.nome}")
+            print(f"Custo Total : {reserva.custo_total}")
+            
+            custo_periodo += reserva.custo_total
+        
+        print(f"\nCusto total do período {data_ini} - {data_fim}: {custo_periodo}")
+        
     def aux_cria_reserva(self):
         
         neuro = self.ger_medico.corpo_medico['42559722-9']
@@ -316,8 +416,10 @@ def main():
     adm.insert_data()
     # adm.adm_main()
     
-    adm.aux_cria_reserva()
-    adm.custo_por_sala()
+    adm.reservas_por_periodo('01/01/2015', '12/12/2017')
+    
+    # adm.aux_cria_reserva()
+    # adm.custo_por_sala()
     
     # adm.reservas_passadas()
     # adm.reservas_futuras()

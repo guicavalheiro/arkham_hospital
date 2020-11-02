@@ -11,6 +11,7 @@ import hospital.adm.reservas            as res
                  3 - ALTO RISCO
 - DERMATOLOGISTAS SÓ PODEM RESERVAR SALAS PEQUENAS
 - CARDIOS E NEUROS SÓ PODEM RESERVAR SALAS GRANDES E DE ALTO RISCO
+
 """
 
 class Sala:

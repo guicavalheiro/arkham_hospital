@@ -1,0 +1,49 @@
+{
+    "isadora":{
+        "nome": "Isadora Nicole Maite da Luz",
+        "crm": "21865952-8",
+        "especialidade": "Dermatologista"
+    },
+
+    "heloisa":{
+        "nome": "Heloisa Carolina Caldeira",
+        "crm": "42559722-9",
+        "especialidade": "Neurologista"
+    },
+
+    "catarina":{
+        "nome": "Catarina Daniela Beatriz Lopes",
+        "crm": "99769418-4",
+        "especialidade": "Cardiologista"
+    },
+
+    "luiza":{
+        "nome": "Luiza Mariah Manuela Moraes",
+        "crm": "16923694-5",
+        "especialidade": "Psiquiatra"
+    },
+
+    "pedro":{
+        "nome": "Pedro Carlos Enzo Rodrigues",
+        "crm": "61262597-9",
+        "especialidade": "Radiologista"
+    },
+
+    "caio":{
+        "nome": "Caio Felipe Joao Batista",
+        "crm": "69386988-3",
+        "especialidade": "Fisioterapeuta"
+    },
+
+    "manoel":{
+        "nome": "Manoel Anthony Tomas Nunes",
+        "crm": "82233623-7",
+        "especialidade": "Cardiologista"
+    },
+
+    "murilo":{
+        "nome": "Murilo Antonio Vinicius Cardoso",
+        "crm": "36269685-2",
+        "especialidade": "Neurologista"
+    }
+}

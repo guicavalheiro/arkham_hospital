@@ -1,0 +1,24 @@
+{
+    "pequena": [    
+                "centro_de_terapia",
+                "reabilitacao",
+                "fisioterapia",
+                "patologia",
+                "ambulatorio"
+    ],
+    
+    "grande": [ 
+                "ressonancia_magnetica",
+                "sala_cirurgica",
+                "terapia_intensiva",
+                "raio_x",
+                "ecocardiograma"
+    ],
+
+    "risco": [
+                "terapia_de_choque",
+                "emergencia",
+                "obstetricia",
+                "traumatologia"
+    ]
+}

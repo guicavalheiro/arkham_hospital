@@ -1,0 +1,122 @@
+{
+    "pequena": {
+        
+        "ambulatorio":{
+            "nome": "Ambulatorio",
+            "data": "10/06/2016",
+            "inicio": "10:00",
+            "termino": "13:00",
+            "medico": "21865952-8"
+        },
+
+        "centro_de_terapia": {
+            "nome": "Centro de terapia",
+            "data": "28/11/2017",
+            "inicio": "15:00",
+            "termino": "17:00",
+            "medico": "16923694-5"
+        },
+        
+        "reabilitacao": {
+            "nome": "Centro de Reabilitacao",
+            "data": "12/11/2018",
+            "inicio": "08:00",
+            "termino": "11:00",
+            "medico": "16923694-5"
+        },
+        
+        "fisioterapia": {
+            "nome": "Sala de Fisioterapia",
+            "data": "19/05/2020",
+            "inicio": "14:00",
+            "termino": "16:00",
+            "medico": "69386988-3"
+        },
+
+        "patologia": {
+            "nome": "Sala de Patologia",
+            "data": "24/05/2021",
+            "inicio": "09:00",
+            "termino": "12:00",
+            "medico": "21865952-8"
+        }
+    },
+    
+    "grande": {
+
+        "ressonancia_magnetica": {
+            "nome": "Sala de Ressonancia Magnetica",
+            "data": "07/03/2016",
+            "inicio": "18:00",
+            "termino": "22:00",
+            "medico": "42559722-9"
+        },
+
+        "sala_cirurgica": {
+            "nome": "Sala de Cirurgia",
+            "data": "17/08/2018",
+            "inicio": "19:00",
+            "termino": "21:00",
+            "medico": "99769418-4"
+        },
+
+        "terapia_intensiva": {
+            "nome": "Sala de Terapia Intensiva",
+            "data": "22/12/2019",
+            "inicio": "11:00",
+            "termino": "14:00",
+            "medico": "99769418-4"
+        },
+
+        "raio_x": {
+            "nome": "Sala de Raio-X",
+            "data": "06/12/2020",
+            "inicio": "13:00",
+            "termino": "16:00",
+            "medico": "61262597-9"
+        },
+
+        "ecocardiograma": {
+            "nome": "Sala de Ecocardiograma",
+            "data": "11/01/2021",
+            "inicio": "20:00",
+            "termino": "22:00",
+            "medico": "82233623-7"
+        }
+    },
+
+    "risco": {
+        
+        "terapia_de_choque": {
+            "nome": "Sala de Terapia de Choque",
+            "data": "14/12/2016",
+            "inicio": "15:00",
+            "termino": "18:00",
+            "medico": "36269685-2"
+        },
+
+        "emergencia": {
+            "nome": "Sala de Cirurgia de Emergencia",
+            "data": "22/06/2017",
+            "inicio": "09:00",
+            "termino": "12:00",
+            "medico": "82233623-7"
+        },
+
+        "obstetricia": {
+            "nome": "Sala de Obstetricia",
+            "data": "19/08/2020",
+            "inicio": "17:00",
+            "termino": "20:00",
+            "medico": "36269685-2"
+        },
+
+        "traumatologia": {
+            "nome": "Sala de Traumatologia",
+            "data": "14/05/2021",
+            "inicio": "12:00",
+            "termino": "15:00",
+            "medico": "69386988-3"
+        }
+    }
+}

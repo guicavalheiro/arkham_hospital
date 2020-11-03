@@ -47,7 +47,10 @@ class Sala:
     
     # Métodos de criação de reserva
     
-    def criar_reserva(self, sala, data, hora_inicio, hora_termino, medico):
+    def criar_reserva(self, sala, data, hora_inicio, hora_termino, medico, custo=False):
+        
+        if custo == False:
+            custo = self.salas[sala].custo
         
         key = f'{data} {hora_inicio} {hora_termino} {sala}'
         
@@ -55,10 +58,17 @@ class Sala:
         hora_termino_int = int(hora_termino.split(':')[0])
         total_horas = hora_termino_int - hora_inicio_int
         
-        
         if key in self.reservas:
             self.reserva_falhou(2, key, sala, data, hora_inicio, hora_termino, medico)
             self.reserva_falhou(1, key, sala, data, hora_inicio, hora_termino, medico)
+        
+        elif hora_inicio_int < 6:
+            self.reserva_falhou(2, key, sala, data, hora_inicio, hora_termino, medico)
+            print("\nMotivo: Tentou reservar uma sala antes das 06:00")
+        
+        elif hora_termino_int > 22:
+            self.reserva_falhou(2, key, sala, data, hora_inicio, hora_termino, medico)
+            print("\nMotivo: Tentou reservar uma sala com o termino depois das 22:00")
         
         elif (self.salas[sala].tipo == 'pequena' or self.salas[sala].tipo == 'grande') and total_horas < 2:
             self.reserva_falhou(2, key, sala, data, hora_inicio, hora_termino, medico)
@@ -81,8 +91,6 @@ class Sala:
             print("\nMotivo: Cardiologistas podem apenas alugar salas grandes ou de alto risco.")
         
         else:
-            custo = self.salas[sala].custo
-            
             if self.salas[sala].tipo == 'risco' and int(hora_inicio.split(":")[0]) < 10:
                 custo *= 0.9
                 reserva = res.Reservas(self.salas[sala], data, hora_inicio, hora_termino, medico, custo)
@@ -90,6 +98,9 @@ class Sala:
                 reserva = res.Reservas(self.salas[sala], data, hora_inicio, hora_termino, medico, custo)
             
             self.reservas[key] = reserva
+            return True
+        
+        return False
 
     def reserva_falhou(self, error_id, key, sala, data, hora_inicio, hora_termino, medico):
         
@@ -139,21 +150,21 @@ class Sala:
                 
                 if year < ano_antigo:
                     date_antigo = date
-                    ano_antigo = year
-                    mes_antigo = month
-                    dia_antigo = day
+                    ano_antigo  = year
+                    mes_antigo  = month
+                    dia_antigo  = day
                 
-                elif year == ano_antigo and month < mes_antigo:
+                elif year <= ano_antigo and month < mes_antigo:
                     date_antigo = date
-                    ano_antigo = year
-                    mes_antigo = month
-                    dia_antigo = day
+                    ano_antigo  = year
+                    mes_antigo  = month
+                    dia_antigo  = day
                 
-                elif year == ano_antigo and month == mes_antigo and day < dia_antigo:
+                elif year <= ano_antigo and month <= mes_antigo and day < dia_antigo:
                     date_antigo = date
-                    ano_antigo = year
-                    mes_antigo = month
-                    dia_antigo = day
+                    ano_antigo  = year
+                    mes_antigo  = month
+                    dia_antigo  = day
                 
             ano_antigo = str(ano_antigo)
             if mes_antigo < 10:

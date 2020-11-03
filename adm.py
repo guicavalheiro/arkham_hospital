@@ -7,7 +7,7 @@ from hospital import gerenciador_medico as ger_medico
 """
 
 App, responsável por fazer toda a interação entre classes.
-c
+
 """
 
 class Adm:
@@ -20,11 +20,12 @@ class Adm:
         
         print("\n------------------------ Alocar Sala ------------------------\n")    
         while True:
-            print("Escolha a sala")
-            sala = input("Sala: ")
+            print("Escolha uma das salas abaixo\n")
+            self.lista_todas_salas()
+            sala = input("\nSala: ")
             sala = self.sala.salas[sala]
             
-            print("\nPara esta sala desejada, confira abaixo a disponibilidade para reserva:")
+            print("\nPara esta sala no período desejado, confira abaixo datas já reservadas:")
             self.disponibilidade_futura(sala)
                 
             print("\nInsira uma data, no formato 'dd/mm/aaaa'")
@@ -41,8 +42,19 @@ class Adm:
             crm = input("Crm: ")
             medico = self.ger_medico.corpo_medico[crm]
             
+            print(f"\nO valor-hora para a sala escolhida é de {sala.custo} R$.\n\nVocê deseja alterar?")
+            choice = input("(1) - Sim\n(2) - Não\n\nEscolha: ")
+            
+            if choice == '1':
+                custo = float(input("\nInsira o valor-hora desejado: "))
+            else:
+                custo = sala.custo
+                
             print("\nAlocando...")
-            self.sala.criar_reserva(sala, data, hora_inicio, hora_termino, medico)
+            reservou = self.sala.criar_reserva(sala.nome, data, hora_inicio, hora_termino, medico, custo)
+            
+            if reservou:
+                print("\nSala reservada com sucesso!")
             
             break
     
@@ -76,9 +88,27 @@ class Adm:
             
             else:
                 print("\nEscolha uma opção válida!")
-    
-    def excluir_reserva(self, data_reservada):
+                
+    def escolher_datas(self):
         
+        data_ini = input("\nInsira a data inicial: ")
+        data_fim = input("Insira a data final  : ")
+        return data_ini, data_fim
+    
+    def escolher_reserva_para_exclusao(self):
+        
+        print("\nInsira os detalhes da reserva a ser excluída")
+        
+        data_reservada     = input("\nInsira a data da reserva: ")
+        hora_ini_reservada = input("Insira a hora de inicio : ")
+        hora_fim_reservada = input("Insira a hora de termino: ")
+        sala_reservada     = input("Insira a sala reservada : ")
+
+        return data_reservada, hora_ini_reservada, hora_fim_reservada, sala_reservada
+    
+    def excluir_reserva(self, data_reservada, hora_ini_reservada, hora_fim_reservada, sala_reservada):
+        
+        key_reserva_para_excluir = f'{data_reservada} {hora_ini_reservada} {hora_fim_reservada} {sala_reservada}'
         date = str(datetime.date(datetime.now()))
     
         today_day   = date.split("-")[2]
@@ -100,43 +130,71 @@ class Adm:
             pass
         
         else:
-            print("Insira uma data futura válida.")
+            print("\nInsira uma data futura válida.")
             return 0
 
-        for key_reserva in self.sala.reservas:
-            reserva = self.sala.reservas[key_reserva]
-
-            if reserva.data == data_reservada:
-                self.sala.reservas[key_reserva].pop()
+        print("\nExcluindo a seguinte reserva:")
+        reserva = self.sala.reservas.pop(key_reserva_para_excluir)
+        print(f"\nSala        : {reserva.sala.nome}")
+        print(f"Tipo        : {reserva.sala.tipo}")
+        print(f"Data        : {reserva.data}")
+        print(f"Hora Início : {reserva.hora_inicio}")
+        print(f"Hora Término: {reserva.hora_termino}")
+        print(f"Medico      : {reserva.medico.nome}")
+        print(f"Custo Total : {reserva.custo_total}")
+        
             
     def adm_main(self):
         
         print("\n-- Sistema de alocação de salas Arkham Asylum and Hospital --\n")
         while True:
             
-            print("Selecione uma ação abaixo:")
+            print("\nSelecione uma ação abaixo:")
             print("\n(1) - Reservar sala")
             print("(2) - Listar médicos")
             print("(3) - Listar salas de cirurgia")
-            print("(4) - Listar reservas passadas")
-            print("(5) - Listar reservas futuras")
-            print("(6) - Listar reservas por período")
-            print("(7) - Excluir reserva")
+            print("(4) - Listar salas de cirurgia por tipo")
+            print("(5) - Listar reservas passadas")
+            print("(6) - Listar reservas futuras")
+            print("(7) - Listar reservas por período")
+            print("(8) - Excluir reserva")
+            print("(0) - Sair do programa")
             
-            #acao = int(input("Escolha: "))
-            acao = 1
+            acao = input("\nEscolha: ")
             
-            if acao == 1:
+            if acao == '1':
                 self.alocar_sala()
             
-            elif acao == 2:
+            elif acao == '2':
                 self.lista_medicos()
             
-            elif acao == 3:
+            elif acao == '3':
+                self.lista_todas_salas()
+                
+            elif acao == '4':
                 tipo = self.escolher_tipo()
                 self.lista_salas(tipo)
             
-    
+            elif acao == '5':
+                self.reservas_passadas()
+            
+            elif acao == '6':
+                self.reservas_futuras()
+            
+            elif acao == '7':
+                data_ini, data_fim = self.escolher_datas()
+                self.reservas_por_periodo(data_ini, data_fim)
+            
+            elif acao == '8':
+                data_reservada, hora_ini_reservada, hora_fim_reservada, sala_reservada = self.escolher_reserva_para_exclusao()
+                self.excluir_reserva(data_reservada, hora_ini_reservada, hora_fim_reservada, sala_reservada)
+            
+            elif acao == '0':
+                break
+            
+            else:
+                print("\nFaça uma escolha válida!")
+            
     def insert_data(self):
         
         with open('data/lista_medicos.json') as medicos_json:
@@ -227,6 +285,13 @@ class Adm:
             if sala.tipo == tipo_desejado:
                 print(sala.nome)
     
+    def lista_todas_salas(self):
+        
+        salas = self.sala.salas
+        for sala in salas:
+            sala = salas[sala]
+            print(sala.nome)
+    
     def reservas_passadas(self):
         
         date = str(datetime.date(datetime.now()))
@@ -312,20 +377,6 @@ class Adm:
             print(f"Hora Término: {reserva.hora_termino}")
             print(f"Medico      : {reserva.medico.nome}")
             print(f"Custo Total : {reserva.custo_total}")
-        
-    def custo_por_sala(self):
-        
-        custo_dict = {}
-        for key_sala in self.sala.salas:
-            custo_dict[key_sala] = 0
-        
-        for key_reserva in self.sala.reservas:
-            reserva = self.sala.reservas[key_reserva]
-            custo_dict[reserva.sala.nome] += reserva.custo_total
-        
-        for key_custo in custo_dict:
-            print(f"\nSala        : {key_custo}")
-            print(f"Custo gerado: {custo_dict[key_custo]}")
     
     def reservas_por_periodo(self, data_ini, data_fim):
         
@@ -350,14 +401,23 @@ class Adm:
             ano = date_splitted[2]
             mes = date_splitted[1]
             dia = date_splitted[0]
-                
+            
+            print(f'\nData Inicio : {ini_dia}/{ini_mes}/{ini_ano}')
+            print(f'Data Termino: {fim_dia}/{fim_mes}/{fim_ano}')
+            print(f'Data Analise: {dia}/{mes}/{ano}')
+            print(f"if {ano} > {ini_ano} and {ano} < {fim_ano}")
+            print(f"elif ({ano} >= {ini_ano} and {ano} <= {fim_ano}) and ({mes} > {ini_mes} and {mes} < {fim_mes})")
+            print(f"elif ({ano} >= {ini_ano} and {ano} <= {fim_ano}) and ({mes} => {ini_mes} and {mes} <= {fim_mes}) and ({dia} > {ini_dia} and {dia} < {fim_dia})")
             if (ano > ini_ano and ano < fim_ano):
-                reservas_no_periodo.append(reserva)        
+                print("Entrou no if")
+                reservas_no_periodo.append(reserva)
 
             elif (ano >= ini_ano and ano <= fim_ano) and (mes > ini_mes and mes < fim_mes):
+                print("Entrou no elif 1")
                 reservas_no_periodo.append(reserva)
                 
-            elif (ano >= ini_ano and ano <= fim_ano) and (mes >= ini_mes and mes <= fim_mes) and (dia > ini_dia and dia < fim_dia):
+            elif (ano >= ini_ano and ano <= fim_ano) and (mes >= ini_mes and mes <= fim_mes) and (dia > ini_dia or dia < fim_dia):
+                print("Entrou no elif 2")
                 reservas_no_periodo.append(reserva)
         
         custo_periodo = 0
@@ -375,11 +435,38 @@ class Adm:
             custo_periodo += reserva.custo_total
         
         print(f"\nCusto total do período {data_ini} - {data_fim}: {custo_periodo}")
+    
+    def todas_reservas(self):
         
-    def aux_cria_reserva(self):
+        print()
+        for key_reserva in self.sala.reservas:
+            
+            reserva = self.sala.reservas[key_reserva]
+            # print(f'{key_reserva}')
+            print(f"\nSala        : {reserva.sala.nome}")
+            print(f"Tipo        : {reserva.sala.tipo}")
+            print(f"Data        : {reserva.data}")
+            print(f"Hora Início : {reserva.hora_inicio}")
+            print(f"Hora Término: {reserva.hora_termino}")
+            print(f"Medico      : {reserva.medico.nome}")
+            print(f"Custo Total : {reserva.custo_total}")
+    
+    def custo_por_sala(self):
         
-        neuro = self.ger_medico.corpo_medico['42559722-9']
-        self.sala.criar_reserva('traumatologia', '15/06/2021', '12:00', '15:00', neuro)
+        custo_dict = {}
+        for key_sala in self.sala.salas:
+            custo_dict[key_sala] = 0
+        
+        for key_reserva in self.sala.reservas:
+            reserva = self.sala.reservas[key_reserva]
+            custo_dict[reserva.sala.nome] += reserva.custo_total
+        
+        for key_custo in custo_dict:
+            print(f"\nSala        : {key_custo}")
+            print(f"Custo gerado: {custo_dict[key_custo]}")
+        
+    def cria_reserva_manual(self, nome_sala, data, hora_ini, hora_fim, medico, custo=False):
+        self.sala.criar_reserva(nome_sala, data, hora_ini, hora_fim, medico, custo)
     
     def teste_aloca_ocupada(self):
         
@@ -414,23 +501,7 @@ class Adm:
 def main():
     adm = Adm()
     adm.insert_data()
-    # adm.adm_main()
-    
-    adm.reservas_por_periodo('01/01/2015', '12/12/2017')
-    
-    # adm.aux_cria_reserva()
-    # adm.custo_por_sala()
-    
-    # adm.reservas_passadas()
-    # adm.reservas_futuras()
-    
-    # adm.lista_reservas()
-    # adm.teste_aloca_ocupada()
-    # adm.lista_reservas()
-    # adm.sala.ordernar_reservas_por_data()
-    
-    # adm.lista_medicos()
-    # adm.lista_salas('pequena')
+    adm.adm_main()
     
 if __name__ == "__main__":
     main()

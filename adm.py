@@ -19,44 +19,42 @@ class Adm:
     def alocar_sala(self):
         
         print("\n------------------------ Alocar Sala ------------------------\n")    
-        while True:
-            print("Escolha uma das salas abaixo\n")
-            self.lista_todas_salas()
-            sala = input("\nSala: ")
-            sala = self.sala.salas[sala]
+        
+        print("Escolha uma das salas abaixo\n")
+        self.lista_todas_salas()
+        sala = input("\nSala: ")
+        sala = self.sala.salas[sala]
+        
+        print("\nPara esta sala no período desejado, confira abaixo datas já reservadas:")
+        self.disponibilidade_futura(sala)
             
-            print("\nPara esta sala no período desejado, confira abaixo datas já reservadas:")
-            self.disponibilidade_futura(sala)
-                
-            print("\nInsira uma data, no formato 'dd/mm/aaaa'")
-            data = input("Data: ")
+        print("\nInsira uma data, no formato 'dd/mm/aaaa'")
+        data = input("Data: ")
+        
+        
+        print("\nInsira a hora de início, no formato 'hh:mm'")
+        hora_inicio = input("Hora de início: ")
+        
+        print("\nInsira a hora de termino, no formato 'hh:mm'")
+        hora_termino = input("Hora de termino: ")
+        
+        print("\nInsira o seu CRM, no formato 'xxxxxxxx-x'")
+        crm = input("Crm: ")
+        medico = self.ger_medico.corpo_medico[crm]
+        
+        print(f"\nO valor-hora para a sala escolhida é de {sala.custo} R$.\n\nVocê deseja alterar?")
+        choice = input("(1) - Sim\n(2) - Não\n\nEscolha: ")
+        
+        if choice == '1':
+            custo = float(input("\nInsira o valor-hora desejado: "))
+        else:
+            custo = sala.custo
             
-            
-            print("\nInsira a hora de início, no formato 'hh:mm'")
-            hora_inicio = input("Hora de início: ")
-            
-            print("\nInsira a hora de termino, no formato 'hh:mm'")
-            hora_termino = input("Hora de termino: ")
-            
-            print("\nInsira o seu CRM, no formato 'xxxxxxxx-x'")
-            crm = input("Crm: ")
-            medico = self.ger_medico.corpo_medico[crm]
-            
-            print(f"\nO valor-hora para a sala escolhida é de {sala.custo} R$.\n\nVocê deseja alterar?")
-            choice = input("(1) - Sim\n(2) - Não\n\nEscolha: ")
-            
-            if choice == '1':
-                custo = float(input("\nInsira o valor-hora desejado: "))
-            else:
-                custo = sala.custo
-                
-            print("\nAlocando...")
-            reservou = self.sala.criar_reserva(sala.nome, data, hora_inicio, hora_termino, medico, custo)
-            
-            if reservou:
-                print("\nSala reservada com sucesso!")
-            
-            break
+        print("\nAlocando...")
+        reservou = self.sala.criar_reserva(sala.nome, data, hora_inicio, hora_termino, medico, custo)
+        
+        if reservou:
+            print("\nSala reservada com sucesso!")    
     
     def disponibilidade_futura(self, sala):
         
@@ -121,7 +119,7 @@ class Adm:
         data_res_ano = data_res_split[2]
         
         if data_res_ano > today_year:
-            pass        
+            pass
 
         elif data_res_ano >= today_year and data_res_mes > today_month:
             pass
@@ -208,43 +206,19 @@ class Adm:
         
         with open('data/lista_especialidades.json') as especialidades_json:
             especialidades_data = json.load(especialidades_json)
-            
-        # print(medicos_data)
-        # print()
-        # print(reservas_data)
-        # print()
-        # print(salas_data)
         
         for tipo_sala in salas_data:
             for sala in salas_data[tipo_sala]:
                 self.sala.criar_sala(tipo_sala, sala)
-        
-        # Print teste para inserção de salas
-        # for tipo_sala in self.sala.salas:
-        #     sala = self.sala.salas[tipo_sala] 
-        #     print(f"\nNome : {sala.nome}")
-        #     print(f"Custo: {sala.custo}")
             
-        
         for lista_especialidades in especialidades_data:
             for especialidade in especialidades_data[lista_especialidades]:
                 self.ger_medico.insere_especialidade(especialidade)
-        
-        # Print teste para inserção de especialidades
-        # print(self.ger_medico.corpo_medico)
-        # for especialidade in self.ger_medico.corpo_medico:
-        #     print(especialidade)
+
         
         for nome_medico in medicos_data:
             medico = medicos_data[nome_medico]
             self.ger_medico.criar_medico(medico['nome'], medico['crm'], medico['especialidade'])
-        
-        # Print teste para inserção de médicos
-        # for especialidade in self.ger_medico.corpo_medico:
-        #     for crm in self.ger_medico.corpo_medico[especialidade]:
-        #         medico = self.ger_medico.corpo_medico[especialidade][crm]
-        #         print(f"\nMédico       : {medico.nome}")
-        #         print(f"Especialidade: {medico.especialidade}")
 
         for tipo_reservado in reservas_data:
             for sala_reservada in reservas_data[tipo_reservado]:
@@ -255,18 +229,7 @@ class Adm:
                                         reserva['inicio'], 
                                         reserva['termino'], 
                                         medico)
-        
-        # Print teste para inserção de reservas
-        # for reserva in self.sala.reservas:
-        #     reserva = self.sala.reservas[reserva]
-        #     medico  = self.ger_medico.corpo_medico[reserva['medico']]
-            
-        #     print(f"\nSala   : {reserva['sala'].nome}")
-        #     print(f"Data   : {reserva['data']}")
-        #     print(f"Inicio : {reserva['hora_inicio']}")
-        #     print(f"Termino: {reserva['hora_termino']}")
-        #     print(f"Medico : {medico.nome}")            
-    
+
     def lista_medicos(self):
         corpo = self.ger_medico.corpo_medico
         for key_medico in corpo:    
@@ -342,8 +305,6 @@ class Adm:
         today_day   = date.split("-")[2]
         today_month = date.split("-")[1]
         today_year  = date.split("-")[0]
-    
-        today = f'{today_day}/{today_month}/{today_year}'
         
         reservas_passadas = []
         todas_reservas    = self.sala.ordernar_reservas_por_data()
@@ -442,7 +403,6 @@ class Adm:
         for key_reserva in self.sala.reservas:
             
             reserva = self.sala.reservas[key_reserva]
-            # print(f'{key_reserva}')
             print(f"\nSala        : {reserva.sala.nome}")
             print(f"Tipo        : {reserva.sala.tipo}")
             print(f"Data        : {reserva.data}")

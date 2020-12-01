@@ -174,11 +174,6 @@ class Sala:
            
             aux_res_dict.pop(date_antigo)
             res_list.append((res_dict[date_antigo], f'{dia_antigo}/{mes_antigo}/{ano_antigo}'))
-            
-            # print(len(res_dict))
-        
-        # for tup in res_list:
-        #     print(tup[0], tup[1])
         
         return res_list
         
